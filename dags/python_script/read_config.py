@@ -6,7 +6,7 @@ from google.cloud import storage
 from google.cloud import bigquery
 from google.oauth2 import service_account
 #credentials = service_account.Credentials.from_service_account_file('/opt/airflow/dags/keys/burner-rousingh.json')
-credentials = service_account.Credentials.from_service_account_file('../keys/burner-rousingh.json')
+credentials = service_account.Credentials.from_service_account_file('./dags/keys/burner-rousingh.json')
 
 project_id = 'burner-rousingh'
 TABLE = 'poc_dataset.data_load_config'
