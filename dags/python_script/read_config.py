@@ -28,6 +28,7 @@ def main():
         downloadAndExtractZipFileToEdgeNode(row.zip_file_name)
         uploadCsvFileFromEdgeNodeToBQ(row.zip_file_name, row.text_file_name, row.table_name)
         hydrateTable(row.table_name)
+        cleanup(row.zip_file_name)
 
 def hydrateTable(table_name):
     client.query("UPDATE poc_dataset."+table_name+" SET startdate=current_date(),  enddate='9999-12-31' where true").result()
@@ -50,8 +51,6 @@ def uploadCsvFileFromEdgeNodeToBQ(zip_file_name, text_file_name, table_name):
         with open(file_name, 'rb') as source_file:  
             job = client.load_table_from_file(source_file, "poc_dataset."+table_name, job_config=job_config)
         job.result()
-    rmtree(zip_file_name)
-    os.remove(zip_file_name+'.zip')
     print("successfully loaded from edge location csv file to BQ:"+table_name)
 
 def createTable(hql_file_name):
@@ -75,6 +74,10 @@ def downloadAndExtractZipFileToEdgeNode(zipFileName):
     blob.download_to_filename(zipFileName+".zip")
     with ZipFile(zipFileName+".zip", 'r') as f:
         f.extractall(path=zipFileName)
+
+def cleanup(zip_file_name):
+    rmtree(zip_file_name)
+    os.remove(zip_file_name+'.zip')
 
 if __name__ == "__main__":
     #print(createTable('uprn01_full.sql'))
